@@ -1,0 +1,27 @@
+entryPoints:
+  web:
+    address: ":80"
+  websecure:
+    address: ":443"
+    http:
+      tls: {}  # Active TLS sur l'entryPoint websecure
+
+tls:
+  certificates:
+    - certFile: "/certs/traefik.crt"
+      keyFile: "/certs/traefik.key"
+
+api:
+  dashboard: true
+  insecure: true
+
+providers:
+  docker:
+    exposedByDefault: false
+
+middlewares:
+  headers:
+    headers:
+      forceSTSHeader: true
+      customFrameOptionsValue: "SAMEORIGIN"
+      browserXssFilter: true

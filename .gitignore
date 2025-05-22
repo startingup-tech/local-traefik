@@ -1,0 +1,4 @@
+.DS_Store
+.idea
+traefik/certs/*.crt
+traefik/certs/*.key

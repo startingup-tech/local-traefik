@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  traefik:
+    image: traefik:v3.3
+    container_name: traefik
+    restart: always
+    command:
+      - "--api.dashboard=true"
+      - "--api.insecure=true"  # Permet l'accès au dashboard sans authentification
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.websecure.http.tls=true"
+      - "--entrypoints.websecure.http.tls.certificates[0].certFile=/certs/traefik.crt"
+      - "--entrypoints.websecure.http.tls.certificates[0].keyFile=/certs/traefik.key"
+      - "--entrypoints.websecure.forwardedHeaders.insecure=true"
+      - "--providers.file.filename=/traefik.yml"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./traefik/traefik.yml:/traefik.yml:ro"
+      - "./traefik/certs:/certs:ro"
+    networks:
+      - traefik_proxy
+
+networks:
+  traefik_proxy:
+    external: true
